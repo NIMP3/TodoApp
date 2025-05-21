@@ -39,12 +39,11 @@ fun TaskItem(
     Column(
         modifier = modifier
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .clickable { onClickItem(task.id) }
             .padding(8.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .clickable { onClickItem(task.id) }
+            verticalAlignment = Alignment.CenterVertically
         ){
             Checkbox(
                 checked = task.isCompleted,
