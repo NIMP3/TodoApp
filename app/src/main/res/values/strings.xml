@@ -7,4 +7,10 @@
     <string name="task_deleted">Task deleted</string>
     <string name="tasks_updated">Task updated</string>
     <string name="task_summary_info">%d incomplete, %d completed</string>
+    <string name="task">Task</string>
+    <string name="done">Done</string>
+    <string name="category">Category</string>
+    <string name="task_name">Task name…</string>
+    <string name="task_description">Task description…</string>
+    <string name="save">Save</string>
 </resources>
