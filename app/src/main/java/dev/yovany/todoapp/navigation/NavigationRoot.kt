@@ -1,0 +1,48 @@
+package dev.yovany.todoapp.navigation
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import dev.yovany.todoapp.presentation.detail.TaskScreenRoot
+import dev.yovany.todoapp.presentation.home.HomeScreenRoot
+import kotlinx.serialization.Serializable
+
+@Composable
+fun NavigationRoot(
+    navController: NavHostController,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = HomeScreenDestination
+        ){
+            composable<HomeScreenDestination> {
+                HomeScreenRoot(
+                    navigateToTaskScreen = {
+                        navController.navigate(TaskScreenDestination(it))
+                    },
+                )
+            }
+
+            composable<TaskScreenDestination> {
+                TaskScreenRoot(
+                    navigateBack = {
+                        navController.navigateUp()
+                    },
+                )
+            }
+        }
+    }
+}
+
+@Serializable
+object HomeScreenDestination
+
+@Serializable
+data class TaskScreenDestination(val taskId: String? = null)

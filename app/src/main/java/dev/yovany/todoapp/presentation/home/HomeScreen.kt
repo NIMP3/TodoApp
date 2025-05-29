@@ -40,12 +40,11 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.yovany.todoapp.R
-import dev.yovany.todoapp.domain.Task
 import dev.yovany.todoapp.presentation.home.providers.HomeScreenPreviewProvider
 import dev.yovany.todoapp.ui.theme.TodoAppTheme
 
 @Composable
-fun HomeScreenRoot() {
+fun HomeScreenRoot(navigateToTaskScreen: (String?) -> Unit) {
     val viewModel = viewModel<HomeScreenViewModel>()
     val state = viewModel.state.collectAsState()
     val event = viewModel.event
@@ -82,7 +81,13 @@ fun HomeScreenRoot() {
 
     HomeScreen(
         state = state.value,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            when (action) {
+                HomeScreenAction.OnAddTask -> navigateToTaskScreen(null)
+                is HomeScreenAction.OnClickTask -> navigateToTaskScreen(action.taskId)
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 
@@ -140,7 +145,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { }
+                onClick = { onAction(HomeScreenAction.OnAddTask) },
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -184,7 +189,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp)),
                     task = task,
-                    onClickItem = { },
+                    onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
                     onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
                     onToggleCompletion = { onAction(HomeScreenAction.OnToggleTask(task)) }
                 )
@@ -209,7 +214,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp)),
                     task = task,
-                    onClickItem = { },
+                    onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
                     onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
                     onToggleCompletion = { onAction(HomeScreenAction.OnToggleTask(task)) }
                 )

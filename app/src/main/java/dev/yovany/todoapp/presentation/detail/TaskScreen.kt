@@ -54,6 +54,7 @@ import dev.yovany.todoapp.ui.theme.TodoAppTheme
 @Composable
 fun TaskScreenRoot(
     modifier: Modifier = Modifier,
+    navigateBack: () -> Boolean,
 ) {
     val viewModel = viewModel<TaskScreenViewModel>()
     val state = viewModel.state.collectAsState()
@@ -70,7 +71,9 @@ fun TaskScreenRoot(
                         context.getString(R.string.task_created),
                         Toast.LENGTH_SHORT
                     ).show()
+                    navigateBack()
                 }
+
             }
         }
     }
@@ -78,7 +81,12 @@ fun TaskScreenRoot(
     TaskScreen(
         modifier = modifier,
         state = state.value,
-        onTaskScreenAction = viewModel::onAction
+        onTaskScreenAction = { action ->
+            when (action) {
+                is TaskScreenAction.Back -> navigateBack()
+                else -> viewModel.onAction(action)
+            }
+        }
     )
 }
 

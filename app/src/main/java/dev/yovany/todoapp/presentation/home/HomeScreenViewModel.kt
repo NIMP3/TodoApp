@@ -15,7 +15,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class HomeScreenViewModel: ViewModel() {
-    private val taskLocalDataSource = FakeTaskLocalDataSource()
+    private val fakeTaskLocalDataSource = FakeTaskLocalDataSource
 
     private val _state = MutableStateFlow(HomeDataState())
     val state: StateFlow<HomeDataState> = _state
@@ -30,9 +30,14 @@ class HomeScreenViewModel: ViewModel() {
             }
         )
 
-        taskLocalDataSource.taskFlow.onEach {
-            val completedTasks = it.filter { task -> task.isCompleted }
-            val pendingTasks = it.filter { task -> !task.isCompleted }
+        fakeTaskLocalDataSource.taskFlow.onEach {
+            val completedTasks = it
+                .filter { task -> task.isCompleted }
+                .sortedByDescending { it.date }
+
+            val pendingTasks = it
+                .filter { task -> !task.isCompleted }
+                .sortedByDescending { it.date }
 
             _state.value = _state.value.copy(
                 summary = "${pendingTasks.size} incomplete, ${completedTasks.size} completed",
@@ -47,16 +52,16 @@ class HomeScreenViewModel: ViewModel() {
         viewModelScope.launch {
             when(action) {
                 OnDeleteAllTasks -> {
-                    taskLocalDataSource.removeAllTasks()
+                    fakeTaskLocalDataSource.removeAllTasks()
                     eventChannel.send(HomeScreenEvent.DeletedAllTasks)
                 }
                 is OnDeleteTask -> {
-                    taskLocalDataSource.removeTask(action.task)
+                    fakeTaskLocalDataSource.removeTask(action.task)
                     eventChannel.send(HomeScreenEvent.DeletedTask)
                 }
                 is OnToggleTask -> {
                     val updatedTask = action.task.copy(isCompleted = !action.task.isCompleted)
-                    taskLocalDataSource.updateTask(updatedTask)
+                    fakeTaskLocalDataSource.updateTask(updatedTask)
                     eventChannel.send(HomeScreenEvent.UpdatedTasks)
                 }
                 else -> Unit

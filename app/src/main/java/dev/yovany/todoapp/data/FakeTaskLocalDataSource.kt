@@ -8,7 +8,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class FakeTaskLocalDataSource: TaskLocalDataSource {
+object FakeTaskLocalDataSource: TaskLocalDataSource {
     private val _taskFlow = MutableStateFlow<List<Task>>(emptyList())
 
     init {
