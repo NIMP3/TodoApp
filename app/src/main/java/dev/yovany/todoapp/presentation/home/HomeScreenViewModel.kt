@@ -1,8 +1,16 @@
 package dev.yovany.todoapp.presentation.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import dev.yovany.todoapp.TodoApplication
 import dev.yovany.todoapp.data.FakeTaskLocalDataSource
+import androidx.lifecycle.SavedStateHandle
+import dev.yovany.todoapp.domain.TaskLocalDataSource
 import dev.yovany.todoapp.presentation.home.HomeScreenAction.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,8 +22,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class HomeScreenViewModel: ViewModel() {
-    private val fakeTaskLocalDataSource = FakeTaskLocalDataSource
+class HomeScreenViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val taskLocalDataSource: TaskLocalDataSource
+): ViewModel() {
 
     private val _state = MutableStateFlow(HomeDataState())
     val state: StateFlow<HomeDataState> = _state
@@ -30,7 +40,7 @@ class HomeScreenViewModel: ViewModel() {
             }
         )
 
-        fakeTaskLocalDataSource.taskFlow.onEach {
+        taskLocalDataSource.taskFlow.onEach {
             val completedTasks = it
                 .filter { task -> task.isCompleted }
                 .sortedByDescending { it.date }
@@ -52,19 +62,32 @@ class HomeScreenViewModel: ViewModel() {
         viewModelScope.launch {
             when(action) {
                 OnDeleteAllTasks -> {
-                    fakeTaskLocalDataSource.removeAllTasks()
+                    taskLocalDataSource.removeAllTasks()
                     eventChannel.send(HomeScreenEvent.DeletedAllTasks)
                 }
                 is OnDeleteTask -> {
-                    fakeTaskLocalDataSource.removeTask(action.task)
+                    taskLocalDataSource.removeTask(action.task)
                     eventChannel.send(HomeScreenEvent.DeletedTask)
                 }
                 is OnToggleTask -> {
                     val updatedTask = action.task.copy(isCompleted = !action.task.isCompleted)
-                    fakeTaskLocalDataSource.updateTask(updatedTask)
+                    taskLocalDataSource.updateTask(updatedTask)
                     eventChannel.send(HomeScreenEvent.UpdatedTasks)
                 }
                 else -> Unit
+            }
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val savedStateHandle = createSavedStateHandle()
+                val dataSource = (this[APPLICATION_KEY] as TodoApplication).dataSource
+                HomeScreenViewModel(
+                    taskLocalDataSource = dataSource,
+                    savedStateHandle = savedStateHandle
+                )
             }
         }
     }

@@ -4,11 +4,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import dev.yovany.todoapp.presentation.detail.TaskScreenRoot
+import dev.yovany.todoapp.presentation.detail.TaskScreenViewModel
 import dev.yovany.todoapp.presentation.home.HomeScreenRoot
+import dev.yovany.todoapp.presentation.home.HomeScreenViewModel
 import kotlinx.serialization.Serializable
 
 @Composable
@@ -23,7 +26,12 @@ fun NavigationRoot(
             startDestination = HomeScreenDestination
         ){
             composable<HomeScreenDestination> {
+                val homeScreenViewModel: HomeScreenViewModel = viewModel(
+                    factory = HomeScreenViewModel.Factory
+                )
+
                 HomeScreenRoot(
+                    viewModel = homeScreenViewModel,
                     navigateToTaskScreen = {
                         navController.navigate(TaskScreenDestination(it))
                     },
@@ -31,7 +39,12 @@ fun NavigationRoot(
             }
 
             composable<TaskScreenDestination> {
+                val taskScreenViewModel: TaskScreenViewModel = viewModel(
+                    factory = TaskScreenViewModel.Factory
+                )
+
                 TaskScreenRoot(
+                    viewModel = taskScreenViewModel,
                     navigateBack = {
                         navController.navigateUp()
                     },

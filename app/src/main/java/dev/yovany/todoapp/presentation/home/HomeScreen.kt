@@ -44,8 +44,10 @@ import dev.yovany.todoapp.presentation.home.providers.HomeScreenPreviewProvider
 import dev.yovany.todoapp.ui.theme.TodoAppTheme
 
 @Composable
-fun HomeScreenRoot(navigateToTaskScreen: (String?) -> Unit) {
-    val viewModel = viewModel<HomeScreenViewModel>()
+fun HomeScreenRoot(
+    viewModel: HomeScreenViewModel,
+    navigateToTaskScreen: (String?) -> Unit) {
+
     val state = viewModel.state.collectAsState()
     val event = viewModel.event
 
