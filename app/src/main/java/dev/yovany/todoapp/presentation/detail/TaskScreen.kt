@@ -65,15 +65,15 @@ fun TaskScreenRoot(
     LaunchedEffect(true) {
         event.collect { event ->
             when (event) {
-                TaskScreenEvent.TaskCreated -> {
+                TaskScreenEvent.TaskCreated, TaskScreenEvent.TaskUpdated -> {
+                    val messageId = if(event == TaskScreenEvent.TaskCreated) R.string.task_created else R.string.tasks_updated
                     Toast.makeText(
                         context,
-                        context.getString(R.string.task_created),
+                        context.getString(messageId),
                         Toast.LENGTH_SHORT
                     ).show()
                     navigateBack()
                 }
-
             }
         }
     }

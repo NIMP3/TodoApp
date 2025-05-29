@@ -86,6 +86,8 @@ class TaskScreenViewModel(
                                 category = state.value.category
                             )
                         )
+
+                        eventChannel.send(TaskScreenEvent.TaskUpdated)
                     } ?: run {
                         val task = state.value.toTask()
                         taskLocalDataSource.addTask(task)
