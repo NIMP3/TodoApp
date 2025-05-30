@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -39,13 +40,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.yovany.todoapp.R
 import dev.yovany.todoapp.domain.Category
 import dev.yovany.todoapp.presentation.detail.providers.TaskScreenStatePreviewProvider
@@ -126,6 +127,7 @@ fun TaskScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
+                .imePadding()
         ) {
             Row {
                 Text(
@@ -230,6 +232,8 @@ fun TaskScreen(
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 ),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary),
+                lineLimits = if(isDescriptionFocused) TextFieldLineLimits.MultiLine(minHeightInLines = 1, maxHeightInLines = 5) else TextFieldLineLimits.Default,
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusChanged {  isDescriptionFocused = it.isFocused },
@@ -251,6 +255,7 @@ fun TaskScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
+                enabled = state.canSaveTask,
                 onClick = {
                     onTaskScreenAction(TaskScreenAction.SaveTask)
                 },

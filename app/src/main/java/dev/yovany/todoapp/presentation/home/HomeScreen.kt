@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -157,68 +158,82 @@ fun HomeScreen(
             }
         }
     ) { paddingValues ->  
-        LazyColumn(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
-        ) {
-            item {
-                SummaryInfo(
-                    date = state.date,
-                    pendingTasks = state.pendingTasks.size,
-                    completedTasks = state.completedTasks.size,
-                    totalTasks = state.completedTasks.size + state.pendingTasks.size,
-                )
-            }
+        if (state.completedTasks.isNotEmpty() || state.pendingTasks.isNotEmpty()) {
+            LazyColumn(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
+                item {
+                    SummaryInfo(
+                        date = state.date,
+                        pendingTasks = state.pendingTasks.size,
+                        completedTasks = state.completedTasks.size,
+                        totalTasks = state.completedTasks.size + state.pendingTasks.size,
+                    )
+                }
 
-            stickyHeader {
-                SectionTitle(
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .background(
-                            color = MaterialTheme.colorScheme.surface
-                        ),
-                    title = stringResource(R.string.completed_tasks)
-                )
-            }
+                stickyHeader {
+                    SectionTitle(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .background(
+                                color = MaterialTheme.colorScheme.surface
+                            ),
+                        title = stringResource(R.string.completed_tasks)
+                    )
+                }
 
-            items(
-                state.completedTasks,
-                key = { task -> task.id }
-            ){ task ->
-                TaskItem(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp)),
-                    task = task,
-                    onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
-                    onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
-                    onToggleCompletion = { onAction(HomeScreenAction.OnToggleTask(task)) }
-                )
-            }
+                items(
+                    state.completedTasks,
+                    key = { task -> task.id }
+                ){ task ->
+                    TaskItem(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp)),
+                        task = task,
+                        onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
+                        onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
+                        onToggleCompletion = { onAction(HomeScreenAction.OnToggleTask(task)) }
+                    )
+                }
 
-            stickyHeader {
-                SectionTitle(
-                    modifier = Modifier
-                        .fillParentMaxWidth()
-                        .background(
-                            color = MaterialTheme.colorScheme.surface
-                        ),
-                    title = stringResource(R.string.pending_tasks)
-                )
-            }
+                stickyHeader {
+                    SectionTitle(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .background(
+                                color = MaterialTheme.colorScheme.surface
+                            ),
+                        title = stringResource(R.string.pending_tasks)
+                    )
+                }
 
-            items(
-                state.pendingTasks,
-                key = { task -> task.id }
-            ){ task ->
-                TaskItem(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp)),
-                    task = task,
-                    onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
-                    onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
-                    onToggleCompletion = { onAction(HomeScreenAction.OnToggleTask(task)) }
+                items(
+                    state.pendingTasks,
+                    key = { task -> task.id }
+                ){ task ->
+                    TaskItem(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp)),
+                        task = task,
+                        onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
+                        onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
+                        onToggleCompletion = { onAction(HomeScreenAction.OnToggleTask(task)) }
+                    )
+                }
+            }
+        }
+        else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.no_tasks),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
         }
