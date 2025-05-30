@@ -8,10 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class RoomTaskLocalDataSource(
+class RoomTaskLocalDataSource @Inject constructor(
     private val taskDao: TaskDao,
-    private val dispatcherIO: CoroutineDispatcher = Dispatchers.IO
+    private val dispatcherIO: CoroutineDispatcher
 ): TaskLocalDataSource {
     override val taskFlow: Flow<List<Task>>
         get() = taskDao.getAllTasks().map {

@@ -1,26 +1,18 @@
 package dev.yovany.todoapp.presentation.detail
 
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.toRoute
-import dev.yovany.todoapp.TodoApplication
-import dev.yovany.todoapp.data.FakeTaskLocalDataSource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.yovany.todoapp.domain.Task
 import dev.yovany.todoapp.domain.TaskLocalDataSource
 import dev.yovany.todoapp.navigation.TaskScreenDestination
-import dev.yovany.todoapp.presentation.detail.TaskScreenAction.*
-import dev.yovany.todoapp.presentation.home.HomeScreenViewModel
+import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskCategory
+import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskDone
+import dev.yovany.todoapp.presentation.detail.TaskScreenAction.SaveTask
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -28,8 +20,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TaskScreenViewModel(
+@HiltViewModel
+class TaskScreenViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val taskLocalDataSource: TaskLocalDataSource): ViewModel() {
     val taskData = savedStateHandle.toRoute<TaskScreenDestination>()
@@ -95,19 +89,6 @@ class TaskScreenViewModel(
                     }
                 }
                 else -> Unit
-            }
-        }
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val savedStateHandle = createSavedStateHandle()
-                val dataSource = (this[APPLICATION_KEY] as TodoApplication).dataSource
-                TaskScreenViewModel(
-                    taskLocalDataSource = dataSource,
-                    savedStateHandle = savedStateHandle
-                )
             }
         }
     }
