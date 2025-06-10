@@ -21,7 +21,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
     private val taskLocalDataSource: TaskLocalDataSource
 ): ViewModel() {
 
