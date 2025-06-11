@@ -1,4 +1,4 @@
-package dev.yovany.todoapp.presentation.home
+package dev.yovany.todoapp.presentation
 
 import dev.yovany.todoapp.domain.Task
 import dev.yovany.todoapp.domain.TaskLocalDataSource
