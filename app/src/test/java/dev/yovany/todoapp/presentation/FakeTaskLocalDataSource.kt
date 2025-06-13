@@ -1,5 +1,6 @@
 package dev.yovany.todoapp.presentation
 
+import dev.yovany.todoapp.domain.Category
 import dev.yovany.todoapp.domain.Task
 import dev.yovany.todoapp.domain.TaskLocalDataSource
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +43,26 @@ class FakeTaskLocalDataSource: TaskLocalDataSource {
         currentTasks.clear()
         currentTasks.addAll(tasks)
         _tasksFlow.value = currentTasks.toList()
+    }
+
+    fun loadTestTasks() {
+        val testTasks = listOf(
+            Task(
+                id = "1",
+                title = "Task 1",
+                description = "Description 1",
+                category = Category.WORK
+            ),
+            Task(
+                id = "2",
+                title = "Task 2",
+                description = "Description 2",
+                isCompleted = true,
+                category = Category.OTHER
+            )
+        )
+
+        setTasks(testTasks)
     }
 
     fun getCurrentTasksSnapshot(): List<Task> = currentTasks.toList()

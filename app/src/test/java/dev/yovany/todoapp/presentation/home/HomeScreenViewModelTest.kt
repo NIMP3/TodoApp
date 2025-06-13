@@ -47,21 +47,7 @@ class HomeScreenViewModelTest {
     @Test
     fun `taskFlow emission - updates summary, completedTasks and pendingTasks correctly when tasks are emitted`() = runTest {
         //ARRANGE
-        fakeTaskLocalDataSource.setTasks(listOf(
-            Task(
-                id = "1",
-                title = "Task 1",
-                description = "Description 1",
-                category = Category.WORK
-            ),
-            Task(
-                id = "2",
-                title = "Task 2",
-                description = "Description 2",
-                isCompleted = true,
-                category = Category.OTHER
-            )
-        ))
+        fakeTaskLocalDataSource.loadTestTasks()
 
         //ASSERT
         viewModel.state.test {
@@ -76,21 +62,7 @@ class HomeScreenViewModelTest {
     @Test
     fun `onAction OnDeletedAllTasks - clears all tasks in the local data source and sends DeleteAllTasks event`() = runTest {
         //ARRANGE
-        fakeTaskLocalDataSource.setTasks(listOf(
-            Task(
-                id = "1",
-                title = "Task 1",
-                description = "Description 1",
-                category = Category.WORK
-            ),
-            Task(
-                id = "2",
-                title = "Task 2",
-                description = "Description 2",
-                isCompleted = true,
-                category = Category.OTHER
-            )
-        ))
+        fakeTaskLocalDataSource.loadTestTasks()
 
         //ACT
         viewModel.onAction(HomeScreenAction.OnDeleteAllTasks)
@@ -98,10 +70,97 @@ class HomeScreenViewModelTest {
         //ASSERT
         viewModel.event.test {
             val event = awaitItem()
-            Truth.assertThat(event).isInstanceOf(HomeScreenEvent.DeletedAllTasks::class.java)
-        }
-        Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot()).isEmpty()
 
+            Truth.assertThat(event).isInstanceOf(HomeScreenEvent.DeletedAllTasks::class.java)
+            Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot()).isEmpty()
+        }
+
+        viewModel.state.test {
+            val state = awaitItem()
+
+            Truth.assertThat(state.summary).isEqualTo("0 incomplete, 0 completed")
+            Truth.assertThat(state.completedTasks).isEmpty()
+            Truth.assertThat(state.pendingTasks).isEmpty()
+        }
     }
 
+    @Test
+    fun `onAction OnDeleteTask - removes especific task from the local data source and sends DeleteTask event`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        val taskToDelete = fakeTaskLocalDataSource.getCurrentTasksSnapshot().first { it.isCompleted }
+
+        //ACT
+        viewModel.onAction(HomeScreenAction.OnDeleteTask(taskToDelete))
+
+        //ASSERT
+        viewModel.event.test {
+            val event = awaitItem()
+            Truth.assertThat(event).isInstanceOf(HomeScreenEvent.DeletedTask::class.java)
+            Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot()).hasSize(1)
+            Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot().first()).isNotEqualTo(taskToDelete)
+        }
+
+        viewModel.state.test {
+            val state = awaitItem()
+            Truth.assertThat(state.summary).isEqualTo("1 incomplete, 0 completed")
+            Truth.assertThat(state.completedTasks).isEmpty()
+            Truth.assertThat(state.pendingTasks).hasSize(1)
+        }
+    }
+
+    @Test
+    fun `onAction OnToggleTask - updates task to completed in the local data source and sends UpdatedTasks event`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        val incompleteTask = fakeTaskLocalDataSource.getCurrentTasksSnapshot().first { !it.isCompleted }
+        val incompleteTaskPosition = fakeTaskLocalDataSource.getCurrentTasksSnapshot().indexOf(incompleteTask)
+
+        //ACT
+        viewModel.onAction(HomeScreenAction.OnToggleTask(incompleteTask))
+
+        //ASSERT
+        viewModel.event.test {
+            val event = awaitItem()
+
+            Truth.assertThat(event).isInstanceOf(HomeScreenEvent.UpdatedTasks::class.java)
+            Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot()[incompleteTaskPosition].isCompleted).isTrue()
+        }
+
+        viewModel.state.test {
+            val state = awaitItem()
+
+            Truth.assertThat(state.summary).isEqualTo("0 incomplete, 2 completed")
+            Truth.assertThat(state.completedTasks).hasSize(2)
+            Truth.assertThat(state.pendingTasks).isEmpty()
+        }
+    }
+
+    @Test
+    fun `onAction OnToggleTask - updates task to incomplete in the local data source and sends UpdatedTasks event`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        val completedTask = fakeTaskLocalDataSource.getCurrentTasksSnapshot().first { it.isCompleted }
+        val completedTaskPosition = fakeTaskLocalDataSource.getCurrentTasksSnapshot().indexOf(completedTask)
+
+        //ACT
+        viewModel.onAction(HomeScreenAction.OnToggleTask(completedTask))
+
+        //ASSERT
+        viewModel.event.test {
+            val event = awaitItem()
+
+            Truth.assertThat(event).isInstanceOf(HomeScreenEvent.UpdatedTasks::class.java)
+            Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot()[completedTaskPosition].isCompleted).isFalse()
+        }
+
+        viewModel.state.test {
+            val state = awaitItem()
+
+            Truth.assertThat(state.summary).isEqualTo("2 incomplete, 0 completed")
+            Truth.assertThat(state.completedTasks).isEmpty()
+            Truth.assertThat(state.pendingTasks).hasSize(2)
+        }
+
+    }
 }

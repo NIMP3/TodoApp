@@ -97,6 +97,7 @@ dependencies {
     // Test dependencies
     testImplementation(libs.junit)
     testImplementation(libs.truth)
+    testImplementation(libs.mockk)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.turbine)
 
@@ -106,6 +107,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.truth)
+    androidTestImplementation(libs.mockk)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.navigation.testing)
 

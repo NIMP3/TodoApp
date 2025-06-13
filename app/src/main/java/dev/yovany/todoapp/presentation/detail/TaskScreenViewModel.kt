@@ -1,5 +1,6 @@
 package dev.yovany.todoapp.presentation.detail
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
@@ -38,8 +39,11 @@ class TaskScreenViewModel @Inject constructor(
     private var editedTask: Task? = null
 
     init {
+        Log.d("TaskScreenViewModel", "init")
         taskData.taskId?.let { taskId ->
+            Log.d("TaskScreenViewModel", "init: $taskId")
             viewModelScope.launch {
+                Log.d("TaskScreenViewModel", "init: launch")
                 val task = taskLocalDataSource.getTaskById(taskId)
                 editedTask = task
                 _state.value = _state.value.copy(
@@ -48,8 +52,9 @@ class TaskScreenViewModel @Inject constructor(
                     isTaskDone = editedTask?.isCompleted == true,
                     category = editedTask?.category
                 )
+                Log.d("TaskScreenViewModel", "init: ${_state.value}")
             }
-        }
+        } ?: Log.d("TaskScreenViewModel", "init: null")
 
         canSaveTask.onEach {
             _state.value = _state.value.copy(canSaveTask = it.isNotEmpty())
