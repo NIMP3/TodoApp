@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
 import app.cash.turbine.test
 import com.google.common.truth.Truth
+import dev.yovany.todoapp.domain.Category
 import dev.yovany.todoapp.navigation.TaskScreenDestination
 import dev.yovany.todoapp.presentation.FakeTaskLocalDataSource
 import dev.yovany.todoapp.util.MainCoroutineRule
@@ -56,8 +57,8 @@ class TaskScreenViewModelTest {
         //ASSERT
         viewModel.state.test {
             val initialState = awaitItem()
-            Truth.assertThat(initialState.taskName.text.toString()).isEqualTo(expectedState.taskName.text.toString())
-            Truth.assertThat(initialState.taskDescription.text.toString()).isEqualTo(expectedState.taskDescription.text.toString())
+            Truth.assertThat(initialState.taskName).isEqualTo(expectedState.taskName)
+            Truth.assertThat(initialState.taskDescription).isEqualTo(expectedState.taskDescription)
             Truth.assertThat(initialState.category).isEqualTo(expectedState.category)
             Truth.assertThat(initialState.isTaskDone).isEqualTo(expectedState.isTaskDone)
             Truth.assertThat(initialState.canSaveTask).isEqualTo(expectedState.canSaveTask)
@@ -77,11 +78,137 @@ class TaskScreenViewModelTest {
         viewModel.state.test {
             val loadedState = awaitItem()
 
-            Truth.assertThat(loadedState.taskName.text.toString()).isEqualTo(task.title)
-            Truth.assertThat(loadedState.taskDescription.text.toString()).isEqualTo(task.description)
+            Truth.assertThat(loadedState.taskName).isEqualTo(task.title)
+            Truth.assertThat(loadedState.taskDescription).isEqualTo(task.description)
             Truth.assertThat(loadedState.category).isEqualTo(task.category)
             Truth.assertThat(loadedState.isTaskDone).isEqualTo(task.isCompleted)
             Truth.assertThat(loadedState.canSaveTask).isTrue()
         }
+    }
+
+    @Test
+    fun `onTaskNameChange - updates taskName in state`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        setupViewModelWithTaskId(null)
+
+        //ACT
+        viewModel.onAction(TaskScreenAction.ChangeTaskName("Task 2"))
+
+        //ASSERT
+        viewModel.state.test {
+            val state = awaitItem()
+            Truth.assertThat(state.taskName).isEqualTo("Task 2")
+        }
+    }
+
+    @Test
+    fun `onTaskDescriptionChange - updates taskDescription in state`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        setupViewModelWithTaskId(null)
+
+        //ACT
+        viewModel.onAction(TaskScreenAction.ChangeTaskDescription("Description 2"))
+
+        //ASSERT
+        viewModel.state.test {
+            val state = awaitItem()
+            Truth.assertThat(state.taskDescription).isEqualTo("Description 2")
+        }
+    }
+
+    @Test
+    fun `onCategoryChange - updates category in state`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        val task = fakeTaskLocalDataSource.getCurrentTasksSnapshot().first { !it.isCompleted }
+        setupViewModelWithTaskId(task.id)
+
+        //ACT
+        viewModel.onAction(TaskScreenAction.ChangeTaskCategory(Category.WORK))
+
+        //ASSERT
+        viewModel.state.test {
+            val state = awaitItem()
+            Truth.assertThat(state.category).isEqualTo(Category.WORK)
+        }
+    }
+
+    @Test
+    fun `onTaskDoneChange - updates isTaskDone in state`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        setupViewModelWithTaskId(null)
+
+        //ACT
+        viewModel.onAction(TaskScreenAction.ChangeTaskDone(true))
+
+        //ASSERT
+        viewModel.state.test {
+            val state = awaitItem()
+            Truth.assertThat(state.isTaskDone).isTrue()
+        }
+    }
+
+    @Test
+    fun `onSaveTask - when taskId is null - creates a new task`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        setupViewModelWithTaskId(null)
+
+        //ACT
+        viewModel.onAction(TaskScreenAction.ChangeTaskName("Task 3"))
+        viewModel.onAction(TaskScreenAction.ChangeTaskDescription("Description 3"))
+        viewModel.onAction(TaskScreenAction.ChangeTaskCategory(Category.WORK))
+        viewModel.onAction(TaskScreenAction.ChangeTaskDone(false))
+
+        viewModel.onAction(TaskScreenAction.SaveTask)
+
+        //ASSERT
+        viewModel.event.test {
+            val event = awaitItem()
+
+            val lastTask = fakeTaskLocalDataSource.getCurrentTasksSnapshot().last()
+
+            Truth.assertThat(event).isInstanceOf(TaskScreenEvent.TaskCreated::class.java)
+            Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot().size).isEqualTo(3)
+            Truth.assertThat(lastTask.title).isEqualTo("Task 3")
+            Truth.assertThat(lastTask.description).isEqualTo("Description 3")
+            Truth.assertThat(lastTask.category).isEqualTo(Category.WORK)
+            Truth.assertThat(lastTask.isCompleted).isFalse()
+        }
+    }
+
+    @Test
+    fun `onSaveTask - when taskId is not null - updates existing task`() = runTest {
+        //ARRANGE
+        fakeTaskLocalDataSource.loadTestTasks()
+        val task = fakeTaskLocalDataSource.getCurrentTasksSnapshot().first { it.isCompleted }
+        setupViewModelWithTaskId(task.id)
+
+        //ACT
+        viewModel.onAction(TaskScreenAction.ChangeTaskName("Task 3"))
+        viewModel.onAction(TaskScreenAction.ChangeTaskDescription("Description 3"))
+        viewModel.onAction(TaskScreenAction.ChangeTaskCategory(Category.WORK))
+        viewModel.onAction(TaskScreenAction.ChangeTaskDone(false))
+
+        viewModel.onAction(TaskScreenAction.SaveTask)
+
+        //ASSERT
+        viewModel.event.test {
+            val event = awaitItem()
+
+            val lastTask = fakeTaskLocalDataSource.getCurrentTasksSnapshot().last()
+
+            Truth.assertThat(event).isInstanceOf(TaskScreenEvent.TaskUpdated::class.java)
+            Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot().size).isEqualTo(2)
+            Truth.assertThat(lastTask.title).isEqualTo("Task 3")
+            Truth.assertThat(lastTask.description).isEqualTo("Description 3")
+            Truth.assertThat(lastTask.category).isEqualTo(Category.WORK)
+            Truth.assertThat(lastTask.isCompleted).isFalse()
+        }
+
+
     }
 }

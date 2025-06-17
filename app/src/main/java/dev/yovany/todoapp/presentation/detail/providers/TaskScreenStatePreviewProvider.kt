@@ -13,32 +13,32 @@ class TaskScreenStatePreviewProvider: PreviewParameterProvider<TaskScreenState> 
     override val values: Sequence<TaskScreenState>
         get() = sequenceOf(
             TaskScreenState(
-                taskName = TextFieldState("I have to do my homework"),
-                taskDescription = TextFieldState("I have to do my homework for the next week"),
+                taskName = "I have to do my homework",
+                taskDescription = "I have to do my homework for the next week",
                 isTaskDone = false,
                 category = STUDY
             ),
             TaskScreenState(
-                taskName = TextFieldState("I have to do exercise for the next week"),
-                taskDescription = TextFieldState("I have to do exercise for the next week"),
+                taskName = "I have to do exercise for the next week",
+                taskDescription = "I have to do exercise for the next week",
                 isTaskDone = true,
                 category = PERSONAL
             ),
             TaskScreenState(
-                taskName = TextFieldState("I have to prepare the presentation for the next week"),
-                taskDescription = TextFieldState("I have to prepare the presentation for the next week"),
+                taskName = "I have to prepare the presentation for the next week",
+                taskDescription = "I have to prepare the presentation for the next week",
                 isTaskDone = false,
                 category = WORK
             ),
             TaskScreenState(
-                taskName = TextFieldState("I have to buy a new phone"),
-                taskDescription = TextFieldState("I have to buy a new phone"),
+                taskName = "I have to buy a new phone",
+                taskDescription = "I have to buy a new phone",
                 isTaskDone = true,
                 category = SHOPPING
             ),
             TaskScreenState(
-                taskName = TextFieldState("I have to apply for my car license"),
-                taskDescription = TextFieldState("I have to apply for my car license"),
+                taskName = "I have to apply for my car license",
+                taskDescription = "I have to apply for my car license",
                 isTaskDone = false,
                 category = OTHER
             )

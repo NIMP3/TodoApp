@@ -12,7 +12,9 @@ import dev.yovany.todoapp.domain.Task
 import dev.yovany.todoapp.domain.TaskLocalDataSource
 import dev.yovany.todoapp.navigation.TaskScreenDestination
 import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskCategory
+import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskDescription
 import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskDone
+import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskName
 import dev.yovany.todoapp.presentation.detail.TaskScreenAction.SaveTask
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +33,7 @@ class TaskScreenViewModel @Inject constructor(
 
     private var _state: MutableStateFlow<TaskScreenState> = MutableStateFlow(TaskScreenState())
     val state: StateFlow<TaskScreenState> = _state
-    private val canSaveTask = snapshotFlow { state.value.taskName.text.toString() }
+    private val canSaveTask = snapshotFlow { state.value.taskName }
 
     private val eventChannel = Channel<TaskScreenEvent>()
     val event = eventChannel.receiveAsFlow()
@@ -47,8 +49,8 @@ class TaskScreenViewModel @Inject constructor(
                 val task = taskLocalDataSource.getTaskById(taskId)
                 editedTask = task
                 _state.value = _state.value.copy(
-                    taskName = TextFieldState(editedTask?.title ?: ""),
-                    taskDescription = TextFieldState(editedTask?.description ?: ""),
+                    taskName = editedTask?.title ?: "",
+                    taskDescription = editedTask?.description ?: "",
                     isTaskDone = editedTask?.isCompleted == true,
                     category = editedTask?.category
                 )
@@ -64,6 +66,16 @@ class TaskScreenViewModel @Inject constructor(
     fun onAction(action: TaskScreenAction) {
         viewModelScope.launch {
             when (action) {
+                is ChangeTaskName -> {
+                    _state.value = state.value.copy(
+                        taskName = action.name
+                    )
+                }
+                is ChangeTaskDescription -> {
+                    _state.value = state.value.copy(
+                        taskDescription = action.description
+                    )
+                }
                 is ChangeTaskCategory -> {
                     _state.value = state.value.copy(
                         category = action.category
@@ -79,8 +91,8 @@ class TaskScreenViewModel @Inject constructor(
                         taskLocalDataSource.updateTask(
                             it.copy(
                                 id = it.id,
-                                title = state.value.taskName.text.toString(),
-                                description = state.value.taskDescription.text.toString(),
+                                title = state.value.taskName,
+                                description = state.value.taskDescription,
                                 isCompleted = state.value.isTaskDone,
                                 category = state.value.category
                             )

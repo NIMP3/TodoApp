@@ -27,6 +27,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -204,15 +205,16 @@ fun TaskScreen(
             }
 
             BasicTextField(
-                state = state.taskName,
+                value = state.taskName,
+                onValueChange = { onTaskScreenAction(TaskScreenAction.ChangeTaskName(it)) },
                 textStyle = MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 ),
-                lineLimits = TextFieldLineLimits.MultiLine(maxHeightInLines = 2),
-                decorator = { innerBox ->
+                maxLines = 2,
+                decorationBox = { innerBox ->
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        if (state.taskName.text.toString().isEmpty()) {
+                        if (state.taskName.isEmpty()) {
                             Text(
                                 text = stringResource(R.string.task_name),
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
@@ -228,18 +230,19 @@ fun TaskScreen(
             )
 
             BasicTextField(
-                state = state.taskDescription,
+                value = state.taskDescription ?: "",
+                onValueChange = { onTaskScreenAction(TaskScreenAction.ChangeTaskDescription(it)) },
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 ),
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.onSecondary),
-                lineLimits = if(isDescriptionFocused) TextFieldLineLimits.MultiLine(minHeightInLines = 1, maxHeightInLines = 5) else TextFieldLineLimits.Default,
+                maxLines = if(isDescriptionFocused) 5 else 1,
                 modifier = Modifier
                     .fillMaxWidth()
                     .onFocusChanged {  isDescriptionFocused = it.isFocused },
-                decorator = { innerBox ->
+                decorationBox = { innerBox ->
                     Column(modifier = Modifier.fillMaxWidth()) {
-                        if (state.taskDescription.text.toString().isEmpty() && !isDescriptionFocused) {
+                        if (state.taskDescription.isNullOrEmpty() && !isDescriptionFocused) {
                             Text(
                                 text = stringResource(R.string.task_description),
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),

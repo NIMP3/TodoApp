@@ -6,8 +6,8 @@ import dev.yovany.todoapp.domain.Task
 import java.util.UUID
 
 data class TaskScreenState(
-    val taskName: TextFieldState = TextFieldState(),
-    val taskDescription: TextFieldState = TextFieldState(),
+    val taskName: String = "",
+    val taskDescription: String? = "",
     val category: Category? = null,
     val isTaskDone: Boolean = false,
     val canSaveTask: Boolean = false
@@ -15,8 +15,8 @@ data class TaskScreenState(
     fun toTask(): Task {
         return Task(
             id = UUID.randomUUID().toString(),
-            title = taskName.text.toString(),
-            description = taskDescription.text.toString(),
+            title = taskName,
+            description = taskDescription,
             category = category ?: Category.OTHER,
             isCompleted = isTaskDone
         )
