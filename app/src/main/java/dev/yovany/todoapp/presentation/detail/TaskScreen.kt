@@ -44,6 +44,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -137,6 +139,7 @@ fun TaskScreen(
                 )
 
                 Checkbox(
+                    modifier = Modifier.semantics{ contentDescription = "Task Done" },
                     checked = state.isTaskDone,
                     onCheckedChange = { onTaskScreenAction(TaskScreenAction.ChangeTaskDone(it)) },
                 )
@@ -159,12 +162,14 @@ fun TaskScreen(
                             color = MaterialTheme.colorScheme.onSurface
                         ),
                         modifier = Modifier.padding(8.dp)
+                            .semantics { contentDescription = "Selected Category" }
                     )
 
                     Box(
                         modifier = Modifier
                             .padding(8.dp)
-                            .clickable { isCategoryExpanded = true },
+                            .clickable { isCategoryExpanded = true }
+                            .semantics { contentDescription = "Select Category" },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -179,6 +184,7 @@ fun TaskScreen(
                             modifier = Modifier.background(
                                 color = MaterialTheme.colorScheme.surfaceContainerHighest
                             )
+                                .semantics { contentDescription = "Category Menu" }
                         ) {
                             Column {
                                 Category.entries.forEach { category ->
@@ -195,6 +201,7 @@ fun TaskScreen(
                                                     TaskScreenAction.ChangeTaskCategory(category)
                                                 )
                                             }
+                                            .semantics { contentDescription = category.toString() }
                                     )
                                 }
                             }
@@ -205,6 +212,7 @@ fun TaskScreen(
             }
 
             BasicTextField(
+                modifier = Modifier.semantics{ contentDescription = "Task Name" },
                 value = state.taskName,
                 onValueChange = { onTaskScreenAction(TaskScreenAction.ChangeTaskName(it)) },
                 textStyle = MaterialTheme.typography.headlineLarge.copy(
@@ -216,6 +224,7 @@ fun TaskScreen(
                     Column(modifier = Modifier.fillMaxWidth()) {
                         if (state.taskName.isEmpty()) {
                             Text(
+                                modifier = Modifier.semantics{ contentDescription = "Task Name Placeholder" },
                                 text = stringResource(R.string.task_name),
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                 style = MaterialTheme.typography.headlineLarge.copy(
@@ -239,11 +248,13 @@ fun TaskScreen(
                 maxLines = if(isDescriptionFocused) 5 else 1,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .onFocusChanged {  isDescriptionFocused = it.isFocused },
+                    .onFocusChanged {  isDescriptionFocused = it.isFocused }
+                    .semantics{ contentDescription = "Task Description" },
                 decorationBox = { innerBox ->
                     Column(modifier = Modifier.fillMaxWidth()) {
                         if (state.taskDescription.isNullOrEmpty() && !isDescriptionFocused) {
                             Text(
+                                modifier = Modifier.semantics{ contentDescription = "Task Description Placeholder" },
                                 text = stringResource(R.string.task_description),
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                                 style = MaterialTheme.typography.bodyLarge
@@ -269,7 +280,8 @@ fun TaskScreen(
                     .background(
                         color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(12.dp)
-                    ),
+                    )
+                    .semantics { contentDescription = "Save Task" },
             ) {
                 Text(
                     text = stringResource(R.string.save),

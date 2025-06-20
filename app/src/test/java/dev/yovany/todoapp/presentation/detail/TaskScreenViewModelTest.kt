@@ -124,7 +124,7 @@ class TaskScreenViewModelTest {
         fakeTaskLocalDataSource.loadTestTasks()
         val task = fakeTaskLocalDataSource.getCurrentTasksSnapshot().first { !it.isCompleted }
         setupViewModelWithTaskId(task.id)
-
+ 
         //ACT
         viewModel.onAction(TaskScreenAction.ChangeTaskCategory(Category.WORK))
 

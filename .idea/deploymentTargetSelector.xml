@@ -5,6 +5,21 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="taskScreen_changeTaskCategory_invokesChangeTaskCategoryActionAndSelectedCategoryChanged()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="taskScreen_changeTaskDescription_invokesChangeTaskDescriptionActionAndTaskDescriptionChanged()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="taskScreen_changeTaskName_invokesChangeTaskNameActionAndTaskNameChanged()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="taskScreen_OnBack_invokesBackAction()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="taskScreen_onSaveTask_invokesSaveTaskAction()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

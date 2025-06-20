@@ -19,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,6 +48,7 @@ fun TaskItem(
             verticalAlignment = Alignment.CenterVertically
         ){
             Checkbox(
+                modifier = Modifier.semantics{ contentDescription = "CheckBox Task - ${task.id}"},
                 checked = task.isCompleted,
                 onCheckedChange = {
                     onToggleCompletion(task)
@@ -89,6 +92,7 @@ fun TaskItem(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable { onDeleteItem(task.id) }
+                        .semantics{ contentDescription = "Delete Button Task - ${task.id}"}
                 )
             }
 

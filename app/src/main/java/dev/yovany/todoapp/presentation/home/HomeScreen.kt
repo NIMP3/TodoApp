@@ -35,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -136,6 +138,7 @@ fun HomeScreen(
                                     isMenuExpanded = false },
                                 text = {
                                     Text(
+                                        modifier = Modifier.semantics{ contentDescription = "Delete All"},
                                         text = stringResource(R.string.delete_all)
                                     )
                                 }
@@ -148,6 +151,7 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
+                modifier = Modifier.semantics{ contentDescription = "Add Task"},
                 onClick = { onAction(HomeScreenAction.OnAddTask) },
             ) {
                 Icon(
@@ -171,6 +175,7 @@ fun HomeScreen(
                         pendingTasks = state.pendingTasks.size,
                         completedTasks = state.completedTasks.size,
                         totalTasks = state.completedTasks.size + state.pendingTasks.size,
+                        modifier = Modifier.semantics{ contentDescription = "Summary Info"}
                     )
                 }
 
@@ -180,7 +185,8 @@ fun HomeScreen(
                             .fillParentMaxWidth()
                             .background(
                                 color = MaterialTheme.colorScheme.surface
-                            ),
+                            )
+                            .semantics { contentDescription = "Completed Tasks"},
                         title = stringResource(R.string.completed_tasks)
                     )
                 }
@@ -191,7 +197,8 @@ fun HomeScreen(
                 ){ task ->
                     TaskItem(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp)),
+                            .clip(RoundedCornerShape(8.dp))
+                            .semantics{ contentDescription = "${task.id} - Completed Task"},
                         task = task,
                         onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
                         onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
@@ -205,7 +212,8 @@ fun HomeScreen(
                             .fillParentMaxWidth()
                             .background(
                                 color = MaterialTheme.colorScheme.surface
-                            ),
+                            )
+                            .semantics{ contentDescription = "Pending Tasks"},
                         title = stringResource(R.string.pending_tasks)
                     )
                 }
@@ -216,7 +224,8 @@ fun HomeScreen(
                 ){ task ->
                     TaskItem(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp)),
+                            .clip(RoundedCornerShape(8.dp))
+                            .semantics{ contentDescription = "${task.id} - Pending Task"},
                         task = task,
                         onClickItem = { onAction(HomeScreenAction.OnClickTask(task.id)) },
                         onDeleteItem = { onAction(HomeScreenAction.OnDeleteTask(task)) },
@@ -227,7 +236,8 @@ fun HomeScreen(
         }
         else {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .semantics{ contentDescription = "Content Message"},
                 contentAlignment = Alignment.Center
             ) {
                 Text(
