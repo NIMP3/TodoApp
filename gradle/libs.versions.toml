@@ -53,6 +53,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 dagger-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "navigationComposeHilt" }
 dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt"}
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt"}
+dagger-hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt"}
 
 #Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

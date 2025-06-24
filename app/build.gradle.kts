@@ -23,7 +23,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "dev.yovany.todoapp.presentation.CustomTestRunner"
     }
 
     buildTypes {
@@ -110,6 +110,7 @@ dependencies {
     androidTestImplementation(libs.mockk)
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.navigation.testing)
+    androidTestImplementation(libs.dagger.hilt.android.testing)
 
     // Debug dependencies
     debugImplementation(libs.androidx.ui.tooling)

@@ -105,6 +105,7 @@ fun TaskScreen(
     var isDescriptionFocused by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = Modifier.semantics{ contentDescription = "Task Screen" },
         topBar = {
             TopAppBar(
                 title = {

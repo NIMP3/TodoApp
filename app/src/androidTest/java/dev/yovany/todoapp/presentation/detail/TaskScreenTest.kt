@@ -1,4 +1,4 @@
-package dev.yovany.todoapp.presentatio.detail
+package dev.yovany.todoapp.presentation.detail
 
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
@@ -15,9 +15,6 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.text.AnnotatedString
 import dev.yovany.todoapp.domain.Category
-import dev.yovany.todoapp.presentation.detail.TaskScreen
-import dev.yovany.todoapp.presentation.detail.TaskScreenAction
-import dev.yovany.todoapp.presentation.detail.TaskScreenState
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import org.junit.Rule

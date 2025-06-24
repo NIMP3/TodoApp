@@ -106,7 +106,9 @@ fun HomeScreen(
     var isMenuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .semantics{ contentDescription = "Home Screen" },
         topBar = {
             TopAppBar(
                 title = {

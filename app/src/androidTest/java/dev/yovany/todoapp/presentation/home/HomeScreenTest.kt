@@ -1,4 +1,4 @@
-package dev.yovany.todoapp.presentatio.home
+package dev.yovany.todoapp.presentation.home
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -6,9 +6,6 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
 import dev.yovany.todoapp.domain.Category
 import dev.yovany.todoapp.domain.Task
-import dev.yovany.todoapp.presentation.home.HomeDataState
-import dev.yovany.todoapp.presentation.home.HomeScreen
-import dev.yovany.todoapp.presentation.home.HomeScreenAction
 import dev.yovany.todoapp.ui.theme.TodoAppTheme
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

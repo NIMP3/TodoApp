@@ -19,7 +19,9 @@ import dev.yovany.todoapp.presentation.detail.TaskScreenAction.SaveTask
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -33,7 +35,13 @@ class TaskScreenViewModel @Inject constructor(
 
     private var _state: MutableStateFlow<TaskScreenState> = MutableStateFlow(TaskScreenState())
     val state: StateFlow<TaskScreenState> = _state
-    private val canSaveTask = snapshotFlow { state.value.taskName }
+
+    private val canSaveTaskFlow = state
+        .map { it.taskName.isNotEmpty() }
+        .distinctUntilChanged()
+        .onEach { canSave ->
+            _state.value = _state.value.copy(canSaveTask = canSave)
+        }
 
     private val eventChannel = Channel<TaskScreenEvent>()
     val event = eventChannel.receiveAsFlow()
@@ -41,11 +49,8 @@ class TaskScreenViewModel @Inject constructor(
     private var editedTask: Task? = null
 
     init {
-        Log.d("TaskScreenViewModel", "init")
         taskData.taskId?.let { taskId ->
-            Log.d("TaskScreenViewModel", "init: $taskId")
             viewModelScope.launch {
-                Log.d("TaskScreenViewModel", "init: launch")
                 val task = taskLocalDataSource.getTaskById(taskId)
                 editedTask = task
                 _state.value = _state.value.copy(
@@ -54,13 +59,10 @@ class TaskScreenViewModel @Inject constructor(
                     isTaskDone = editedTask?.isCompleted == true,
                     category = editedTask?.category
                 )
-                Log.d("TaskScreenViewModel", "init: ${_state.value}")
             }
-        } ?: Log.d("TaskScreenViewModel", "init: null")
+        }
 
-        canSaveTask.onEach {
-            _state.value = _state.value.copy(canSaveTask = it.isNotEmpty())
-        }.launchIn(viewModelScope)
+        canSaveTaskFlow.launchIn(viewModelScope)
     }
 
     fun onAction(action: TaskScreenAction) {

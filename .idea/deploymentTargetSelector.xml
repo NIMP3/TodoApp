@@ -5,19 +5,19 @@
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="taskScreen_changeTaskCategory_invokesChangeTaskCategoryActionAndSelectedCategoryChanged()">
+      <SelectionState runConfigName="createNewTask_entersDataAndSaves_taskAppearsOnHomeScreen()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="taskScreen_changeTaskDescription_invokesChangeTaskDescriptionActionAndTaskDescriptionChanged()">
+      <SelectionState runConfigName="editTask_fromHomeScreen_updatesData_reflectsOnHomeScreenAndDatabase()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="taskScreen_changeTaskName_invokesChangeTaskNameActionAndTaskNameChanged()">
+      <SelectionState runConfigName="toggleTaskCompletionOnHomeScreen_movesTaskBetweenSections_updatesDatabase()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="taskScreen_OnBack_invokesBackAction()">
+      <SelectionState runConfigName="deleteTaskFromHomeScreen_removesTaskFromUiAndDatabase()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="taskScreen_onSaveTask_invokesSaveTaskAction()">
+      <SelectionState runConfigName="NavigationTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
