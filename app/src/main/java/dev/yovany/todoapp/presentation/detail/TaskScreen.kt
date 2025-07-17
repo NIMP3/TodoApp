@@ -41,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.yovany.todoapp.R
 import dev.yovany.todoapp.domain.Category
 import dev.yovany.todoapp.presentation.detail.providers.TaskScreenStatePreviewProvider
@@ -109,10 +111,24 @@ fun TaskScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.task),
-                        style = MaterialTheme.typography.headlineSmall
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()) {
+
+                        Text(
+                            text = stringResource(R.string.task),
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        Text(text = stringResource(R.string.done))
+
+                        Checkbox(
+                            modifier = Modifier.semantics{ contentDescription = "Task Done" },
+                            checked = state.isTaskDone,
+                            onCheckedChange = { onTaskScreenAction(TaskScreenAction.ChangeTaskDone(it)) },
+                        )
+                    }
                 },
                 navigationIcon = {
                     Icon(
@@ -121,7 +137,7 @@ fun TaskScreen(
                         tint = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.clickable { onTaskScreenAction(TaskScreenAction.Back) }
                     )
-                }
+                },
             )
         }
     ) { paddingValues ->
@@ -133,84 +149,13 @@ fun TaskScreen(
                 .padding(horizontal = 16.dp)
                 .imePadding()
         ) {
-            Row {
-                Text(
-                    text = stringResource(R.string.done),
-                    modifier = Modifier.padding(8.dp)
-                )
+            Text(stringResource(R.string.category),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                ))
 
-                Checkbox(
-                    modifier = Modifier.semantics{ contentDescription = "Task Done" },
-                    checked = state.isTaskDone,
-                    onCheckedChange = { onTaskScreenAction(TaskScreenAction.ChangeTaskDone(it)) },
-                )
-
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
-
-                Row(
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            color = MaterialTheme.colorScheme.outline,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                ) {
-                    Text(
-                        text = state.category?.toString() ?: stringResource(R.string.category),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurface
-                        ),
-                        modifier = Modifier.padding(8.dp)
-                            .semantics { contentDescription = "Selected Category" }
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clickable { isCategoryExpanded = true }
-                            .semantics { contentDescription = "Select Category" },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = "Select category",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-
-                        DropdownMenu(
-                            expanded = isCategoryExpanded,
-                            onDismissRequest = { isCategoryExpanded = false },
-                            modifier = Modifier.background(
-                                color = MaterialTheme.colorScheme.surfaceContainerHighest
-                            )
-                                .semantics { contentDescription = "Category Menu" }
-                        ) {
-                            Column {
-                                Category.entries.forEach { category ->
-                                    Text(
-                                        text = category.toString(),
-                                        style = MaterialTheme.typography.bodyMedium.copy(
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        ),
-                                        modifier = Modifier
-                                            .padding(12.dp)
-                                            .clickable {
-                                                isCategoryExpanded = false
-                                                onTaskScreenAction(
-                                                    TaskScreenAction.ChangeTaskCategory(category)
-                                                )
-                                            }
-                                            .semantics { contentDescription = category.toString() }
-                                    )
-                                }
-                            }
-
-                        }
-                    }
-                }
-            }
+            CategoriesViews()
 
             BasicTextField(
                 modifier = Modifier.semantics{ contentDescription = "Task Name" },
