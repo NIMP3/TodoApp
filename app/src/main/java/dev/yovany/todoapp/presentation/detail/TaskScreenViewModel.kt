@@ -1,8 +1,5 @@
 package dev.yovany.todoapp.presentation.detail
 
-import android.util.Log
-import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.yovany.todoapp.domain.Task
 import dev.yovany.todoapp.domain.TaskLocalDataSource
 import dev.yovany.todoapp.navigation.TaskScreenDestination
-import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskCategory
+import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskCategories
 import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskDescription
 import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskDone
 import dev.yovany.todoapp.presentation.detail.TaskScreenAction.ChangeTaskName
@@ -57,7 +54,7 @@ class TaskScreenViewModel @Inject constructor(
                     taskName = editedTask?.title ?: "",
                     taskDescription = editedTask?.description ?: "",
                     isTaskDone = editedTask?.isCompleted == true,
-                    category = editedTask?.category
+                    categories = editedTask?.categories ?: emptyList()
                 )
             }
         }
@@ -78,9 +75,9 @@ class TaskScreenViewModel @Inject constructor(
                         taskDescription = action.description
                     )
                 }
-                is ChangeTaskCategory -> {
+                is ChangeTaskCategories -> {
                     _state.value = state.value.copy(
-                        category = action.category
+                        categories = action.categories
                     )
                 }
                 is ChangeTaskDone -> {
@@ -96,7 +93,7 @@ class TaskScreenViewModel @Inject constructor(
                                 title = state.value.taskName,
                                 description = state.value.taskDescription,
                                 isCompleted = state.value.isTaskDone,
-                                category = state.value.category
+                                categories = state.value.categories,
                             )
                         )
 

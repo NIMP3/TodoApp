@@ -16,31 +16,35 @@ class TaskScreenStatePreviewProvider: PreviewParameterProvider<TaskScreenState> 
                 taskName = "I have to do my homework",
                 taskDescription = "I have to do my homework for the next week",
                 isTaskDone = false,
-                category = STUDY
+                categories = listOf(STUDY, PERSONAL),
             ),
             TaskScreenState(
                 taskName = "I have to do exercise for the next week",
                 taskDescription = "I have to do exercise for the next week",
                 isTaskDone = true,
-                category = PERSONAL
+                categories = listOf(STUDY, PERSONAL),
             ),
             TaskScreenState(
                 taskName = "I have to prepare the presentation for the next week",
                 taskDescription = "I have to prepare the presentation for the next week",
                 isTaskDone = false,
-                category = WORK
+                categories = listOf(WORK, PERSONAL),
             ),
             TaskScreenState(
                 taskName = "I have to buy a new phone",
                 taskDescription = "I have to buy a new phone",
                 isTaskDone = true,
-                category = SHOPPING
+                categories = listOf(SHOPPING, PERSONAL),
             ),
             TaskScreenState(
                 taskName = "I have to apply for my car license",
                 taskDescription = "I have to apply for my car license",
                 isTaskDone = false,
-                category = OTHER
+                categories = listOf(
+                    WORK,
+                    PERSONAL,
+                    SHOPPING
+                )
             )
         )
 }

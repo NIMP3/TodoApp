@@ -24,14 +24,14 @@ val completedTasks = mutableListOf(
         title = "I have to do my homework",
         description = "I have to do my homework for the next week",
         isCompleted = true,
-        category = Category.STUDY
+        categories = listOf(Category.STUDY, Category.PERSONAL),
     ),
     Task(
         id = "2",
         title = "I have to do exercise for the next week",
         description = "I have to do exercise for the next week",
         isCompleted = true,
-        category = Category.PERSONAL
+        categories = listOf(Category.STUDY, Category.PERSONAL),
     ))
 
 val pendingTasks = mutableListOf(
@@ -40,82 +40,92 @@ val pendingTasks = mutableListOf(
         title = "I have to prepare the presentation for the next week",
         description = "I have to prepare the presentation for the next week",
         isCompleted = false,
-        category = Category.WORK
+        categories = listOf(Category.WORK, Category.PERSONAL),
     ),
     Task(
         id = "6",
         title = "I have to buy a new phone for the next week",
         description = "I have to buy a new phone for the next week",
         isCompleted = false,
-        category = Category.SHOPPING
+        categories = listOf(Category.SHOPPING, Category.PERSONAL),
     ),
     Task(
         id = "7",
         title = "I have to ride my bike and go out with my father",
         description = "I have to ride my bike and go out with my father",
         isCompleted = false,
-        category = Category.PERSONAL
+        categories = listOf(Category.PERSONAL, Category.OTHER)
     ),
     Task(
         id = "8",
         title = "I have to manage my PBIs on the Azure DevOps",
         description = "I have to manage my PBIs on the Azure DevOps",
         isCompleted = false,
-        category = Category.WORK
+        categories = listOf(Category.PERSONAL, Category.WORK),
     ),
     Task(
         id = "9",
         title = "I have to watch a movie with my family",
         description = "I have to watch a movie with my family",
         isCompleted = false,
-        category = Category.PERSONAL
+        categories = listOf(Category.PERSONAL, Category.OTHER),
     ),
     Task(
         id = "10",
         title = "I have to pay the bills",
         description = "I have to pay the bills",
         isCompleted = false,
-        category = Category.SHOPPING
+        categories = listOf(Category.PERSONAL, Category.SHOPPING),
     ),
     Task(
         id = "11",
         title = "I have to go to the supermarket",
         description = "I have to go to the supermarket",
         isCompleted = false,
-        category = Category.PERSONAL
+        categories = listOf(Category.SHOPPING, Category.PERSONAL),
     ),
     Task(
         id = "12",
         title = "I have to apply for my car license",
         description = "I have to apply for my car license",
         isCompleted = false,
-        category = Category.OTHER
+        categories = listOf(Category.WORK, Category.PERSONAL, Category.SHOPPING),
     ),
     Task(
         id = "13",
         title = "I have to go to the gym",
         description = "I have to go to the gym",
         isCompleted = false,
-        category = Category.PERSONAL
+        categories = listOf(Category.PERSONAL, Category.OTHER),
     ),
     Task(
         id = "14",
         title = "I have to go to the bank",
         description = "I have to go to the bank",
         isCompleted = false,
-        category = Category.OTHER
+        categories = listOf(
+            Category.PERSONAL,
+            Category.FINANCE,
+            Category.URGENT
+        )
     ),
     Task(
         id = "15",
         title = "I have to go to the park",
         description = "I have to go to the park",
         isCompleted = false,
-        category = Category.PERSONAL
+        categories = listOf(
+            Category.PERSONAL,
+            Category.HEALTH
+        ),
     ),
     Task(
         id = "16",
         title = "I have to go to the beach",
         description = "I have to go to the beach",
         isCompleted = false,
-        category = Category.PERSONAL
+        categories = listOf(
+            Category.PERSONAL,
+            Category.TRAVEL
+        ),
     ))

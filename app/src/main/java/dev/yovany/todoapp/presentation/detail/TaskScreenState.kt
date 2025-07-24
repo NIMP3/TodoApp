@@ -8,7 +8,7 @@ import java.util.UUID
 data class TaskScreenState(
     val taskName: String = "",
     val taskDescription: String? = "",
-    val category: Category? = null,
+    val categories: List<Category> = emptyList(),
     val isTaskDone: Boolean = false,
     val canSaveTask: Boolean = false
 ) {
@@ -17,7 +17,7 @@ data class TaskScreenState(
             id = UUID.randomUUID().toString(),
             title = taskName,
             description = taskDescription,
-            category = category ?: Category.OTHER,
+            categories = categories,
             isCompleted = isTaskDone
         )
     }

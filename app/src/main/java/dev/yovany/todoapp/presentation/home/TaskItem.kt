@@ -99,7 +99,7 @@ fun TaskItem(
         }
 
         if(!task.isCompleted) {
-            task.category?.let {
+            task.categories.firstOrNull()?.let {
                 Text(
                     text = it.toString(),
                     style = MaterialTheme.typography.bodySmall,
@@ -107,7 +107,7 @@ fun TaskItem(
                     modifier = Modifier
                         .align(alignment = Alignment.End)
                         .clip(shape = RoundedCornerShape(8.dp))
-                        .background(Color(task.category.color))
+                        .background(Color(task.categories.firstOrNull()?.color ?: Category.OTHER.color))
                         .padding(4.dp)
                         .padding(horizontal = 4.dp)
                 )
@@ -124,7 +124,7 @@ fun TaskItemPreview() {
             id = "1",
             title = "I have to do my homework",
             description = "I have to do my homework for the next week",
-            category = Category.STUDY,
+            categories = listOf(Category.STUDY, Category.PERSONAL),
             isCompleted = false,
         ))
     }

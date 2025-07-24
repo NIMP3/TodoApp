@@ -7,6 +7,6 @@ sealed interface TaskScreenAction {
     data object Back : TaskScreenAction
     data class ChangeTaskName(val name: String) : TaskScreenAction
     data class ChangeTaskDescription(val description: String?) : TaskScreenAction
-    data class ChangeTaskCategory(val category: Category?) : TaskScreenAction
+    data class ChangeTaskCategories(val categories: List<Category>) : TaskScreenAction
     data class ChangeTaskDone(val isTaskDone: Boolean) : TaskScreenAction
 }

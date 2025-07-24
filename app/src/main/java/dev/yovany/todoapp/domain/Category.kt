@@ -1,5 +1,7 @@
 package dev.yovany.todoapp.domain
 
+import dev.yovany.todoapp.presentation.detail.domain.CategoryView
+
 enum class Category(val color: Int) {
     WORK(0xFF007AFF.toInt()),
     PERSONAL(0xFFFF9500.toInt()),
@@ -32,5 +34,9 @@ enum class Category(val color: Int) {
         fun fromOrdinal(ordinal: Int): Category? {
             return entries.find { it.ordinal == ordinal }
         }
+    }
+
+    fun toCategoryView(): CategoryView {
+        return CategoryView(category = this)
     }
 }
