@@ -12,8 +12,11 @@ import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToKey
 import androidx.compose.ui.test.performTextInput
 import androidx.compose.ui.text.AnnotatedString
+import com.google.common.truth.Truth
 import dev.yovany.todoapp.domain.Category
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
@@ -64,8 +67,9 @@ class TaskScreenTest {
             .assertIsDisplayed()
             .assertIsNotEnabled()
 
-        composeTestRule.onNodeWithContentDescription("Select Category")
+        composeTestRule.onNodeWithContentDescription("Add Category")
             .assertExists()
+            .assertIsDisplayed()
     }
 
     @Test
@@ -74,7 +78,7 @@ class TaskScreenTest {
         val initialState = TaskScreenState(
             taskName = "Task Name",
             taskDescription = "Task Description",
-            category = Category.WORK,
+            categories = listOf(Category.WORK, Category.PERSONAL, Category.OTHER),
             isTaskDone = true,
             canSaveTask = true
         )
@@ -114,9 +118,19 @@ class TaskScreenTest {
             .assertIsDisplayed()
             .assertIsEnabled()
 
-        composeTestRule.onNodeWithContentDescription("Selected Category")
+        composeTestRule.onNodeWithContentDescription("Category List")
             .assertExists()
-            .assertTextEquals(initialState.category.toString())
+            .assertIsDisplayed()
+
+        composeTestRule.onNodeWithContentDescription("Add Category")
+            .assertExists()
+            .assertIsDisplayed()
+
+        initialState.categories.forEach { category ->
+            composeTestRule.onNodeWithContentDescription(category.toString())
+                .assertExists()
+                .assertIsDisplayed()
+        }
     }
 
     @Test
@@ -160,12 +174,12 @@ class TaskScreenTest {
     }
 
     @Test
-    fun taskScreen_changeTaskCategory_invokesChangeTaskCategoryActionAndSelectedCategoryChanged() {
+    fun taskScreen_changeTaskCategory_invokesChangeTaskCategoriesActionAndSelectedCategoriesChanged() {
         //ARRANGE
         val initialState = TaskScreenState(
             taskName = "Task Name",
             taskDescription = "Task Description",
-            category = Category.WORK,
+            categories = listOf(Category.WORK),
             isTaskDone = true,
             canSaveTask = true
         )
@@ -177,8 +191,8 @@ class TaskScreenTest {
             capturedAction.set(action)
 
             when(action) {
-                is TaskScreenAction.ChangeTaskCategory -> {
-                    assertEquals(Category.OTHER, action.category)
+                is TaskScreenAction.ChangeTaskCategories -> {
+                    Truth.assertThat(action.categories).containsExactly(Category.WORK, Category.FINANCE)
                 }
                 else -> {}
             }
@@ -191,21 +205,34 @@ class TaskScreenTest {
             )
         }
 
-        composeTestRule.onNodeWithContentDescription("Select Category")
+        composeTestRule.onNodeWithContentDescription("Add Category")
+            .assertExists()
+            .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule.onNodeWithContentDescription("Categories Menu")
+            .assertExists()
+            .assertIsDisplayed()
+
+        composeTestRule.onNodeWithContentDescription("Category List Menu")
+            .assertExists()
+            .assertIsDisplayed()
+
+        composeTestRule.onNodeWithContentDescription(Category.FINANCE.name)
             .assertExists()
             .assertIsDisplayed()
             .performClick()
 
         //ACT
-        composeTestRule.onNodeWithContentDescription(Category.OTHER.toString())
-            .assertExists()
+        composeTestRule.onNodeWithContentDescription("Done Categories")
+            .assertIsDisplayed()
             .performClick()
 
         //ASSERT
         assertTrue("onAction lambda was not called.", onActionCalled.get())
         assertEquals(
             "The wrong action was invoked or action has unexpected parameters.",
-            TaskScreenAction.ChangeTaskCategory(Category.OTHER),
+            TaskScreenAction.ChangeTaskCategories(listOf(Category.WORK, Category.FINANCE)),
             capturedAction.get())
     }
 

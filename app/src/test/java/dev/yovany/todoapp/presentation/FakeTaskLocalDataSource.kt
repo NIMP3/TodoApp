@@ -51,14 +51,14 @@ class FakeTaskLocalDataSource: TaskLocalDataSource {
                 id = "1",
                 title = "Task 1",
                 description = "Description 1",
-                category = Category.WORK
+                categories = listOf(Category.WORK),
             ),
             Task(
                 id = "2",
                 title = "Task 2",
                 description = "Description 2",
                 isCompleted = true,
-                category = Category.OTHER
+                categories = listOf(Category.OTHER)
             )
         )
 

@@ -59,7 +59,7 @@ class TaskScreenViewModelTest {
             val initialState = awaitItem()
             Truth.assertThat(initialState.taskName).isEqualTo(expectedState.taskName)
             Truth.assertThat(initialState.taskDescription).isEqualTo(expectedState.taskDescription)
-            Truth.assertThat(initialState.category).isEqualTo(expectedState.category)
+            Truth.assertThat(initialState.categories).isEmpty()
             Truth.assertThat(initialState.isTaskDone).isEqualTo(expectedState.isTaskDone)
             Truth.assertThat(initialState.canSaveTask).isEqualTo(expectedState.canSaveTask)
         }
@@ -80,7 +80,7 @@ class TaskScreenViewModelTest {
 
             Truth.assertThat(loadedState.taskName).isEqualTo(task.title)
             Truth.assertThat(loadedState.taskDescription).isEqualTo(task.description)
-            Truth.assertThat(loadedState.category).isEqualTo(task.category)
+            Truth.assertThat(loadedState.categories.first()).isEqualTo(task.categories.first())
             Truth.assertThat(loadedState.isTaskDone).isEqualTo(task.isCompleted)
             Truth.assertThat(loadedState.canSaveTask).isTrue()
         }
@@ -119,19 +119,19 @@ class TaskScreenViewModelTest {
     }
 
     @Test
-    fun `onCategoryChange - updates category in state`() = runTest {
+    fun `onCategoriesChange - updates categories in state`() = runTest {
         //ARRANGE
         fakeTaskLocalDataSource.loadTestTasks()
         val task = fakeTaskLocalDataSource.getCurrentTasksSnapshot().first { !it.isCompleted }
         setupViewModelWithTaskId(task.id)
  
         //ACT
-        viewModel.onAction(TaskScreenAction.ChangeTaskCategory(Category.WORK))
+        viewModel.onAction(TaskScreenAction.ChangeTaskCategories(listOf(Category.WORK, Category.PERSONAL)))
 
         //ASSERT
         viewModel.state.test {
             val state = awaitItem()
-            Truth.assertThat(state.category).isEqualTo(Category.WORK)
+            Truth.assertThat(state.categories).containsExactly(Category.WORK, Category.PERSONAL)
         }
     }
 
@@ -160,7 +160,7 @@ class TaskScreenViewModelTest {
         //ACT
         viewModel.onAction(TaskScreenAction.ChangeTaskName("Task 3"))
         viewModel.onAction(TaskScreenAction.ChangeTaskDescription("Description 3"))
-        viewModel.onAction(TaskScreenAction.ChangeTaskCategory(Category.WORK))
+        viewModel.onAction(TaskScreenAction.ChangeTaskCategories(listOf(Category.WORK, Category.PERSONAL)))
         viewModel.onAction(TaskScreenAction.ChangeTaskDone(false))
 
         viewModel.onAction(TaskScreenAction.SaveTask)
@@ -175,7 +175,7 @@ class TaskScreenViewModelTest {
             Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot().size).isEqualTo(3)
             Truth.assertThat(lastTask.title).isEqualTo("Task 3")
             Truth.assertThat(lastTask.description).isEqualTo("Description 3")
-            Truth.assertThat(lastTask.category).isEqualTo(Category.WORK)
+            Truth.assertThat(lastTask.categories).containsExactly(Category.WORK, Category.PERSONAL)
             Truth.assertThat(lastTask.isCompleted).isFalse()
         }
     }
@@ -190,7 +190,7 @@ class TaskScreenViewModelTest {
         //ACT
         viewModel.onAction(TaskScreenAction.ChangeTaskName("Task 3"))
         viewModel.onAction(TaskScreenAction.ChangeTaskDescription("Description 3"))
-        viewModel.onAction(TaskScreenAction.ChangeTaskCategory(Category.WORK))
+        viewModel.onAction(TaskScreenAction.ChangeTaskCategories(listOf(Category.WORK, Category.PERSONAL)))
         viewModel.onAction(TaskScreenAction.ChangeTaskDone(false))
 
         viewModel.onAction(TaskScreenAction.SaveTask)
@@ -205,7 +205,7 @@ class TaskScreenViewModelTest {
             Truth.assertThat(fakeTaskLocalDataSource.getCurrentTasksSnapshot().size).isEqualTo(2)
             Truth.assertThat(lastTask.title).isEqualTo("Task 3")
             Truth.assertThat(lastTask.description).isEqualTo("Description 3")
-            Truth.assertThat(lastTask.category).isEqualTo(Category.WORK)
+            Truth.assertThat(lastTask.categories).containsExactly(Category.WORK, Category.PERSONAL)
             Truth.assertThat(lastTask.isCompleted).isFalse()
         }
 

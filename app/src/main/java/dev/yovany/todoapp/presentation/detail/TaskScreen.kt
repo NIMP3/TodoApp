@@ -108,7 +108,7 @@ fun TaskScreen(
 
     val categoriesCount = state.categories.size
     val rows = if (categoriesCount > 4) 2 else 1
-    val gridHeight = if (categoriesCount > 4) 100.dp else 60.dp
+    val gridHeight = if (categoriesCount > 4) 100.dp else if (categoriesCount > 0) 60.dp else 0.dp
 
     var isDescriptionFocused by remember { mutableStateOf(false) }
 
@@ -167,7 +167,9 @@ fun TaskScreen(
                 FloatingActionButton(
                     onClick = { showCategoriesMenu = true },
                     shape = CircleShape,
-                    modifier = Modifier.size(32.dp)
+                    modifier = Modifier
+                        .size(32.dp)
+                        .semantics { contentDescription = "Add Category" },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -182,7 +184,9 @@ fun TaskScreen(
                 contentPadding = PaddingValues(vertical = 8.dp),
                 horizontalItemSpacing = 8.dp,
                 verticalArrangement = Arrangement.spacedBy(6.dp),
-                modifier = Modifier.height(gridHeight)) {
+                modifier = Modifier
+                    .height(gridHeight)
+                    .semantics { contentDescription = "Category List"} ) {
 
                 items(state.categories.size) { index ->
                     CategoryCard(categoryView = state.categories[index].toCategoryView())
@@ -276,6 +280,7 @@ fun TaskScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     CategoriesView(
+                        modifier = Modifier.semantics { contentDescription = "Categories Menu" },
                         categories = state.categories,
                         onCategoriesSelected = { selectedCategories ->
                             onTaskScreenAction(TaskScreenAction.ChangeTaskCategories(selectedCategories))

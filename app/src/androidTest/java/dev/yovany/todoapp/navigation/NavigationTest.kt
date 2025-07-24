@@ -3,14 +3,9 @@ package dev.yovany.todoapp.navigation
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
-import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.hasContentDescription
-import androidx.compose.ui.test.hasTestTag
-import androidx.compose.ui.test.hasText
-import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
@@ -23,7 +18,6 @@ import dev.yovany.todoapp.MainActivity
 import dev.yovany.todoapp.data.TaskDao
 import dev.yovany.todoapp.data.TaskEntity
 import dev.yovany.todoapp.domain.Category
-import dev.yovany.todoapp.domain.Task
 import dev.yovany.todoapp.presentation.detail.TaskScreenState
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -56,7 +50,9 @@ class NavigationTest {
     private val taskNameInputTag = "Task Name"
     private val taskDescriptionInputTag = "Task Description"
     private val taskToggleTag = "Task Done"
-    private val categoryDropdownActivatorTag = "Select Category"
+    private val addCategoryButtonTag = "Add Category"
+    private val categoriesMenuTag = "Categories Menu"
+    private val doneCategoriesButtonTag = "Done Categories"
     private val saveTaskButtonTag = "Save Task"
 
     @Before
@@ -92,13 +88,20 @@ class NavigationTest {
             .assertIsDisplayed()
             .performTextInput(description)
 
-        composeTestRule.onNodeWithContentDescription(categoryDropdownActivatorTag)
+        composeTestRule.onNodeWithContentDescription(addCategoryButtonTag)
             .assertIsDisplayed()
             .performClick()
 
-        composeTestRule.onNodeWithContentDescription(category.toString())
+        composeTestRule.onNodeWithContentDescription(categoriesMenuTag)
+            .assertIsDisplayed()
+
+        composeTestRule.onNodeWithContentDescription(category.name)
             .assertIsDisplayed()
             .performScrollTo()
+            .performClick()
+
+        composeTestRule.onNodeWithContentDescription(doneCategoriesButtonTag)
+            .assertIsDisplayed()
             .performClick()
 
         composeTestRule.onNodeWithContentDescription(taskToggleTag)
@@ -126,16 +129,16 @@ class NavigationTest {
         //ARRANGE
         val title = "New Task Title"
         val description = "New Task Description"
-        val category = Category.PERSONAL
+        val categories = listOf(Category.WORK)
         val editedTitle = "Edited Task Title"
         val editedDescription = "Edited Task Description"
-        val editedCategory = Category.PERSONAL
+        val newCategories = listOf(Category.PERSONAL, Category.FINANCE)
 
         runBlocking {
             val task = TaskScreenState(
                 taskName = title,
                 taskDescription = description,
-                category = category,
+                categories = categories,
                 isTaskDone = false
             ).toTask()
 
@@ -162,13 +165,22 @@ class NavigationTest {
             .assertIsDisplayed()
             .performTextReplacement(editedDescription)
 
-        composeTestRule.onNodeWithContentDescription(categoryDropdownActivatorTag)
+        composeTestRule.onNodeWithContentDescription(addCategoryButtonTag)
             .assertIsDisplayed()
             .performClick()
 
-        composeTestRule.onNodeWithContentDescription(editedCategory.toString())
+        composeTestRule.onNodeWithContentDescription(categoriesMenuTag)
             .assertIsDisplayed()
-            .performScrollTo()
+
+        newCategories.forEach { newCategory ->
+            composeTestRule.onNodeWithContentDescription(newCategory.name)
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+        }
+
+        composeTestRule.onNodeWithContentDescription(doneCategoriesButtonTag)
+            .assertIsDisplayed()
             .performClick()
 
         composeTestRule.onNodeWithContentDescription(taskToggleTag)
@@ -196,7 +208,7 @@ class NavigationTest {
             Truth.assertThat(tasks).hasSize(1)
             Truth.assertThat(tasks.first().title).isEqualTo(editedTitle)
             Truth.assertThat(tasks.first().description).isEqualTo(editedDescription)
-            Truth.assertThat(tasks.first().category).isEqualTo(editedCategory.ordinal)
+            Truth.assertThat(tasks.first().categories).containsExactlyElementsIn(categories.map { it.ordinal } + newCategories.map { it.ordinal })
         }
 
     }
@@ -206,12 +218,12 @@ class NavigationTest {
         //ARRANGE
         val title = "New Task Title"
         val description = "New Task Description"
-        val category = Category.PERSONAL
+        val categories = listOf(Category.WORK, Category.PERSONAL)
 
         val taskState = TaskScreenState(
             taskName = title,
             taskDescription = description,
-            category = category,
+            categories = categories,
             isTaskDone = false
         )
         val task = taskState.toTask()
@@ -247,12 +259,12 @@ class NavigationTest {
         //ARRANGE
         val title = "New Task Title"
         val description = "New Task Description"
-        val category = Category.PERSONAL
+        val categories = listOf(Category.WORK, Category.PERSONAL)
 
         val taskState = TaskScreenState(
             taskName = title,
             taskDescription = description,
-            category = category,
+            categories = categories,
             isTaskDone = false)
 
         val task = taskState.toTask()

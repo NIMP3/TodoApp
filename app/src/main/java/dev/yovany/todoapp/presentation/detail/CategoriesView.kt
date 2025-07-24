@@ -19,6 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.yovany.todoapp.domain.Category
@@ -55,6 +57,7 @@ fun CategoriesView(
             horizontalItemSpacing = 8.dp,
             verticalArrangement = Arrangement.spacedBy(6.dp),
             modifier = Modifier
+                .semantics { contentDescription = "Category List Menu" }
                 .height(200.dp)
                 .padding(start = 12.dp, bottom = 12.dp)) {
 
@@ -69,6 +72,7 @@ fun CategoriesView(
 
         Button(
             modifier = Modifier
+                .semantics { contentDescription = "Done Categories" }
                 .padding(horizontal = 12.dp, vertical = 8.dp)
                 .fillMaxWidth()
                 .height(48.dp),

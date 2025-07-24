@@ -49,14 +49,14 @@ class HomeScreenTest {
                 title = "Task 2",
                 description = "Description 2",
                 isCompleted = true,
-                category = Category.OTHER
+                categories = listOf(Category.OTHER)
             ),
             Task(
                 id = "3",
                 title = "Task 3",
                 description = "Description 3",
                 isCompleted = true,
-                category = Category.WORK
+                categories = listOf(Category.WORK)
             ),
         )
         val pendingTasks = listOf(
@@ -64,7 +64,7 @@ class HomeScreenTest {
                 id = "1",
                 title = "Task 1",
                 description = "Description 1",
-                category = Category.WORK
+                categories = listOf(Category.WORK)
             )
         )
 
@@ -153,7 +153,7 @@ class HomeScreenTest {
                 id = "1",
                 title = "Task 1",
                 description = "Description 1",
-                category = Category.WORK
+                categories = listOf(Category.WORK)
             )
         )
 
@@ -198,7 +198,7 @@ class HomeScreenTest {
                 id = "1",
                 title = "Task 1",
                 description = "Description 1",
-                category = Category.WORK
+                categories = listOf(Category.WORK)
             )
         )
 
@@ -243,7 +243,7 @@ class HomeScreenTest {
                 id = "1",
                 title = "Task 1",
                 description = "Description 1",
-                category = Category.WORK
+                categories = listOf(Category.WORK)
             )
 
         val initialState = HomeDataState(pendingTasks = listOf(pendingTask))
